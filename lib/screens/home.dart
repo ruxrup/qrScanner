@@ -16,19 +16,11 @@ class _MyHomePageState extends State<MyHomePage> {
   late CameraController controller;
   late String url;
 
-  showpic() {
-    if (picture != null) {
-      GallerySaver.saveImage(picture!.path);
-
-      return SizedBox();
-    } else {
-      return SizedBox();
-    }
-  }
-
   open() async {
     String? url = await Scan.parse(picture!.path);
-    launch(url.toString());
+    if (url != null) {
+      launch(url.toString());
+    }
   }
 
   void initState() {
@@ -71,7 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    picture = await controller.takePicture();
+                    try {
+                      picture = await controller.takePicture();
+                    } on Exception catch (e) {}
                     setState(() {});
                     open();
                   },
