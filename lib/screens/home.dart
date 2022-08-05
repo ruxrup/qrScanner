@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 200, width: 200, child: CameraPreview(controller)),
+          SizedBox(child: CameraPreview(controller)),
           SizedBox(
             height: 80,
           ),
@@ -73,14 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () async {
                     picture = await controller.takePicture();
                     setState(() {});
+                    open();
                   },
                   child: Icon(Icons.camera))
             ],
           ),
-          SizedBox(
-            child: showpic(),
-          ),
-          ElevatedButton(onPressed: (() => open()), child: Text("open url"))
         ],
       ),
     );
