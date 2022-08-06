@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qrcode_scanner/main.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:qrcode_scanner/screens/gallery.dart';
 import 'package:qrcode_scanner/screens/generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scan/scan.dart';
@@ -19,13 +23,13 @@ class _MyHomePageState extends State<MyHomePage> {
   late CameraController controller;
   late String url;
 
-  open() async {
-    if (picture != null) {
-      String? url = await Scan.parse(picture!.path);
+  open(pic) async {
+    if (pic != null) {
+      String? url = await Scan.parse(pic!.path);
       if (url != null) {
         launch(url.toString());
       }
-      picture = null;
+      pic = null;
     }
   }
 
@@ -78,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     picture = await controller.takePicture();
                   } on Exception catch (e) {}
                   setState(() {});
-                  open();
+                  open(picture);
                 },
-                child: Icon(Icons.qr_code)),
+                child: Icon(Icons.camera_alt)),
           ),
           Container(
             alignment: const Alignment(0.6, 0.7),
@@ -98,6 +102,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 },
                 child: Icon(Icons.qr_code_2)),
+          ),
+          Container(
+            alignment: const Alignment(-0.6, 0.7),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(5),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
+                onPressed: (() async {
+                  await gallery(context);
+                }),
+                child: Icon(Icons.photo_album_rounded)),
           )
         ],
       ),

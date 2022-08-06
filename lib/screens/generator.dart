@@ -43,7 +43,6 @@ Widget generator(BuildContext context) {
                 elevation: 0.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
-                padding: EdgeInsets.all(10),
                 textStyle:
                     TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             onPressed: () {
@@ -56,7 +55,7 @@ Widget generator(BuildContext context) {
                     );
               linkController.clear();
             },
-            child: Text("Generate QR code!"),
+            child: Text("Generate QR"),
           ),
         ],
       ),
