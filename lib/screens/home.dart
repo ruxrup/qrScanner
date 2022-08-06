@@ -1,8 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qrcode_scanner/main.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:qrcode_scanner/screens/generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scan/scan.dart';
 
@@ -17,9 +20,12 @@ class _MyHomePageState extends State<MyHomePage> {
   late String url;
 
   open() async {
-    String? url = await Scan.parse(picture!.path);
-    if (url != null) {
-      launch(url.toString());
+    if (picture != null) {
+      String? url = await Scan.parse(picture!.path);
+      if (url != null) {
+        launch(url.toString());
+      }
+      picture = null;
     }
   }
 
@@ -50,28 +56,49 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      body: Column(
+      body: Stack(
+        alignment: AlignmentDirectional.centerStart,
         children: [
-          SizedBox(child: CameraPreview(controller)),
           SizedBox(
-            height: 80,
+            child: CameraPreview(controller),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
           ),
-          Row(
-            children: [
-              SizedBox(
-                width: 160,
-              ),
-              ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      picture = await controller.takePicture();
-                    } on Exception catch (e) {}
-                    setState(() {});
-                    open();
-                  },
-                  child: Icon(Icons.camera))
-            ],
+          Container(
+            alignment: const Alignment(0, 0.7),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(15),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
+                onPressed: () async {
+                  try {
+                    picture = await controller.takePicture();
+                  } on Exception catch (e) {}
+                  setState(() {});
+                  open();
+                },
+                child: Icon(Icons.qr_code)),
           ),
+          Container(
+            alignment: const Alignment(0.6, 0.7),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(5),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
+                onPressed: () async {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => generator(context),
+                  );
+                },
+                child: Icon(Icons.qr_code_2)),
+          )
         ],
       ),
     );
